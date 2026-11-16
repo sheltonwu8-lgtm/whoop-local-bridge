@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WHOOP 授权结果 | Shelton Daily Health</title><style>body{font:16px/1.6 system-ui,sans-serif;max-width:680px;margin:40px auto;padding:0 20px;color:#222}button{padding:12px 18px;border:0;border-radius:6px;background:#0969da;color:#fff;font:inherit;cursor:pointer}</style></head><body>
+<h1>WHOOP 授权结果</h1><p id="status">正在读取授权结果...</p><button id="copy" type="button" hidden>复制授权结果</button>
+<p>复制后返回本机设置页面粘贴。不要把授权结果发到聊天、截图或公开仓库。</p>
+<script>
+const query=new URLSearchParams(location.search);
+const code=query.get("code"),state=query.get("state"),error=query.get("error");
+history.replaceState(null,"",location.pathname);
+const status=document.getElementById("status"),button=document.getElementById("copy");
+if(error){status.textContent="授权未完成："+error}
+else if(code&&state){
+ status.textContent="授权已完成。请复制授权结果，并粘贴到本机设置页面。";
+ button.hidden=false;
+ button.addEventListener("click",async()=>{
+  try{await navigator.clipboard.writeText(JSON.stringify({code,state}));status.textContent="已复制。现在返回本机设置页面。"}
+  catch{status.textContent="复制失败，请检查浏览器剪贴板权限后重试。"}
+ });
+}else{status.textContent="没有收到授权结果。请从本机设置页面重新开始授权。"}
+</script></body></html>
